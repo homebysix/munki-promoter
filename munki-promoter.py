@@ -259,7 +259,7 @@ def add_to_slack_blocks(blocks, promotion, promote_to, names, versions, custom_i
 	custom_versions = custom_item_descriptions['versions']
 	custom_promote_tos = custom_item_descriptions['promote_tos']
 	if len(custom_names) > 0:
-		custom_subheading = {"type": "text", "text": f"The following custom items have been promoted:"}
+		custom_subheading = {"type": "text", "text": "The following custom items have been promoted:"}
 		blocks.append({"type": "rich_text", "elements": [{"type": "rich_text_section","elements": [custom_subheading]}]})
 		custom_item_blocks = []
 		for i, name in enumerate(custom_names):
@@ -280,7 +280,7 @@ def setup_slack_blocks():
 		global certifi
 		import certifi
 	except ImportError as e:
-			logging.error(f"Certifi library could not be loaded.")
+			logging.error("Certifi library could not be loaded.")
 			logging.error("You can install the necessary dependencies with 'python3 -m pip install -r requirements.txt'")
 			sys.exit(1)
 	header_block = {"type": "header", "text": {"type": "plain_text", "text": "New items automatically promoted in Munki", "emoji": True}}
@@ -616,7 +616,7 @@ def check_selection(config, item_name):
 # ----------------------------------------
 def user_confirm(s):
 	print(s)
-	print(f'Do you want to proceed? [y/n] ', end='')
+	print('Do you want to proceed? [y/n] ', end='')
 	while True:
 		try:
 			return _BOOLMAP[str(input()).lower()]
@@ -637,11 +637,11 @@ def process_options():
 	parser.add_option('--munki', '-m', dest='munki_path', default=MUNKI_PATH,
 						help=f'Optional path to the munki pkginfo directory, defaults to {MUNKI_PATH}')
 	parser.add_option('--yaml', '-y', dest='config_file',
-						help=f'Optional path to the configuration yaml file. Defaults to config.yml if not set. If config.yml does not exist, default configuration will be used.')
+						help='Optional path to the configuration yaml file. Defaults to config.yml if not set. If config.yml does not exist, default configuration will be used.')
 	parser.add_option('--slack', '-s', dest='slack_url',
-						help=f'Optional url for Slack webhooks.')
+						help='Optional url for Slack webhooks.')
 	parser.add_option('--markdown', dest='markdown_path',
-						help=f'Optional file name to print markdown summary of promotions.')
+						help='Optional file name to print markdown summary of promotions.')
 	parser.add_option('--auto', '-a', dest='auto', action='store_true',
 						help='Run without interaction.')
 	parser.add_option('--reset-edit-date', dest='reset_edit', action='store_true',
