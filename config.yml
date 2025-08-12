@@ -11,7 +11,7 @@
         - "autopkg"
         - "staging"
       custom_items:
-        GoogleChrome: 
+        GoogleChrome:
           days_in_catalog: 3
     staging_manual:
       promote_to:

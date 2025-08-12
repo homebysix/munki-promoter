@@ -43,7 +43,7 @@ _BOOLMAP = {
 }
 
 using_default_config = False
-	
+
 # ----------------------------------------
 # 				Strings
 # ----------------------------------------
@@ -53,9 +53,9 @@ def and_str(l):
 		return l[0]
 	result = ""
 	for i, s in enumerate(l):
-		result += s 
+		result += s
 		if i == len(l) - 2:
-			result += " and " 
+			result += " and "
 		elif i < len(l) - 2:
 			result += ", "
 	return result
@@ -63,7 +63,7 @@ def and_str(l):
 def white_space_pad_strings(l):
 	maxlen = len(max(l, key=len))
 	result = [s + (' ' * (maxlen - len(s))) for s in l]
-	return result 
+	return result
 
 def describe_promotion(promotion, promote_to, names, versions, custom_item_descriptions):
 	result = "\n------------------------------------------------------------------------------------\n"
@@ -91,7 +91,7 @@ def get_config(config_path, is_config_specified) -> dict:
 		global yaml
 		import yaml
 		if not os.path.exists(config_path):
-			# import success BUT no file 
+			# import success BUT no file
 			if is_config_specified:
 				# file was user provided -> error: user provided file should exist
 				logging.error(f"Configuration file {config_path} is not present.")
@@ -103,7 +103,7 @@ def get_config(config_path, is_config_specified) -> dict:
 		# import success AND file exists
 		if not os.access(config_path, os.R_OK):
 			logging.error(f"You don't have access to {config_path}")
-			sys.exit(1)	
+			sys.exit(1)
 		with open(config_path, "r") as config_yaml:
 			logging.info(f"Loading {config_path} ...")
 			try:
@@ -224,7 +224,7 @@ def send_slack_webhook(slack_url, slack_blocks):
 	if parsed_url.scheme != 'https':
 		logging.error(f"Invalid URL scheme '{parsed_url.scheme}'. Only https is allowed.")
 		sys.exit(1)
-	
+
 	context_block = {"type": "context", "elements": [{"type": "mrkdwn", "text": ":monkey_face: This message brought to you by <https://github.com/jc0b/munki-promoter|munki-promoter>."}]}
 	slack_blocks.append(context_block)
 	slack_blocks.append({"type": "divider"})
@@ -393,7 +393,7 @@ def prep_single_promotion(promotion, config, munki_path, config_path):
 		promotions = config["promotions"]
 		if does_promotion_exist(promotion, promotions):
 			promote_to, promote_from, days, custom_items = get_promotion_info(promotion, promotions, config, config_path)
-			names, version, custom_item_descriptions, promotions = prep_pkgsinfo_single_promotion(promote_to, promote_from, days, custom_items, munki_path, config) 
+			names, version, custom_item_descriptions, promotions = prep_pkgsinfo_single_promotion(promote_to, promote_from, days, custom_items, munki_path, config)
 			return names, version, custom_item_descriptions, promotions, promote_to
 		else:
 			# error: catalog does not exist
@@ -529,7 +529,7 @@ def prep_set_edit_date(munki_path, config, overwrite=False, promotion=None, prom
 			promotions = config["promotions"]
 			if does_promotion_exist(promotion, promotions):
 				_, promote_from, _, custom_items = get_promotion_info(promotion, promotions, config, config_path)
-				return prep_pkgsinfo_edit_date(munki_path, config, promote_from=promote_from, promote_from_days=promote_from_days, custom_items=custom_items) 
+				return prep_pkgsinfo_edit_date(munki_path, config, promote_from=promote_from, promote_from_days=promote_from_days, custom_items=custom_items)
 			else:
 				# error: catalog does not exist
 				logging.error(f'Promotion "{promotion}" not found! Use --list to see valid catalogs to promote. Promotions can be configured in {config_path}.')
@@ -539,7 +539,7 @@ def prep_set_edit_date(munki_path, config, overwrite=False, promotion=None, prom
 			logging.error(f'No promotions are currently defined in {config_path}.')
 			sys.exit(1)
 	else:
-		return prep_pkgsinfo_edit_date(munki_path, overwrite=overwrite) 
+		return prep_pkgsinfo_edit_date(munki_path, overwrite=overwrite)
 
 def prep_pkgsinfo_edit_date(munki_path, config, overwrite=False, promote_from=None, promote_from_days=None, custom_items=None):
 	names = []
@@ -624,7 +624,7 @@ def user_confirm(s):
 			print('Please respond with \'y\' or \'n\'.\n')
 
 # ----------------------------------------
-# 				Main 
+# 				Main
 # ----------------------------------------
 
 def process_options():
