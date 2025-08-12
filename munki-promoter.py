@@ -143,7 +143,7 @@ def print_promotions(config, config_path):
 				to_str = and_str(promotions[promotion]["promote_to"])
 				from_str = promotion
 				if "promote_from" in promotions[promotion]:
-					if promotions[promotion]["promote_from"] and type(promotions[promotion]["promote_from"]) == list and len(promotions[promotion]["promote_from"]) > 0:
+					if promotions[promotion]["promote_from"] and isinstance(promotions[promotion]["promote_from"], list) and len(promotions[promotion]["promote_from"]) > 0:
 						from_str = and_str(promotions[promotion]["promote_from"])
 				promotion_strings.append(promotion)
 				from_strings.append(from_str)
@@ -166,11 +166,11 @@ def print_promotions(config, config_path):
 		print(f"No promotions are currently defined. Promotions can be configured in {config_path}.")
 
 def does_promotion_exist(promotion, promotions):
-	return promotions and type(promotions) == dict and promotion in promotions
+	return promotions and isinstance(promotions, dict) and promotion in promotions
 
 def is_valid_promotion(promotion, promotions):
-	if type(promotions[promotion]) == dict:
-		if "promote_to" in promotions[promotion] and type(promotions[promotion]["promote_to"]) == list:
+	if isinstance(promotions[promotion], dict):
+		if "promote_to" in promotions[promotion] and isinstance(promotions[promotion]["promote_to"], list):
 			if len(promotions[promotion]["promote_to"]) > 0:
 				return True
 	return False
@@ -181,11 +181,11 @@ def get_promotion_info(promotion, promotions, config, config_path):
 		promote_to = promotions[promotion]["promote_to"]
 		# find our where to promote from, using default of promotion name if necessary
 		promote_from = [promotion]
-		if "promote_from" in promotions[promotion] and type(promotions[promotion]["promote_from"]) == list and len(promotions[promotion]["promote_to"]) > 0:
+		if "promote_from" in promotions[promotion] and isinstance(promotions[promotion]["promote_from"], list) and len(promotions[promotion]["promote_to"]) > 0:
 			promote_from = promotions[promotion]["promote_from"]
 		# get custom items
 		custom_items = dict()
-		if "custom_items" in promotions[promotion] and type(promotions[promotion]["custom_items"]) == dict:
+		if "custom_items" in promotions[promotion] and isinstance(promotions[promotion]["custom_items"], dict):
 			custom_items = promotions[promotion]["custom_items"]
 		# get days
 		if "days_in_catalog" in promotions[promotion]:
@@ -205,10 +205,10 @@ def check_selection_specified_correctly(config, config_path):
 	if config and "selection" in config:
 		if "type" in config["selection"]:
 			if config["selection"]["type"] == "inclusion":
-				if "items" not in config["selection"] or type(config["selection"]["items"]) != list or len(config["selection"]["items"]) < 1:
+				if "items" not in config["selection"] or not isinstance(config["selection"]["items"], list) or len(config["selection"]["items"]) < 1:
 					logging.warning(f"Selection type set to inclusion but no list of items defined in {config_path}. No items will be considered.")
 			elif config["selection"]["type"] == "exclusion":
-				if "items" not in config["selection"] or type(config["selection"]["items"]) != list or len(config["selection"]["items"]) < 1:
+				if "items" not in config["selection"] or not isinstance(config["selection"]["items"], list) or len(config["selection"]["items"]) < 1:
 					logging.warning(f"Selection type set to exclusion but no list of items defined in {config_path}. All items will be considered.")
 			elif config["selection"]["type"] != "all":
 				logging.error(f'Selection type set incorrectly in {config_path}. Selection type must be "inclusion", "exclusion", or "all", but was set to {config["selection"]["type"]}.')
@@ -345,7 +345,7 @@ def prep_all_promotions(config, munki_path, config_path):
 	custom_item_descriptions = dict()
 	prepped_promotions = []
 	promote_tos = dict()
-	if config and "promotions" in config and type(config["promotions"]) == dict:
+	if config and "promotions" in config and isinstance(config["promotions"], dict):
 		promotions = config["promotions"]
 		for file in get_munki_paths(munki_path):
 			try:
@@ -389,7 +389,7 @@ def prep_all_promotions(config, munki_path, config_path):
 		sys.exit(1)
 
 def prep_single_promotion(promotion, config, munki_path, config_path):
-	if config and "promotions" in config and type(config["promotions"]) == dict:
+	if config and "promotions" in config and isinstance(config["promotions"], dict):
 		promotions = config["promotions"]
 		if does_promotion_exist(promotion, promotions):
 			promote_to, promote_from, days, custom_items = get_promotion_info(promotion, promotions, config, config_path)
@@ -447,13 +447,13 @@ def prep_item_for_promotion(item, promote_to, promote_from, days, custom_items, 
 		logging.error(f"File {item_path} is missing expected keys.", exc_info=True)
 		sys.exit(1)
 	# check if custom item
-	if item_name in custom_items and type(custom_items[item_name]) == dict:
+	if item_name in custom_items and isinstance(custom_items[item_name], dict):
 		if "days_in_catalog" in custom_items[item_name]:
 			days = custom_items[item_name]["days_in_catalog"]
-		if "promote_to" in custom_items[item_name] and type(custom_items[item_name]["promote_to"]) == list and len(custom_items[item_name]["promote_to"]) > 0:
+		if "promote_to" in custom_items[item_name] and isinstance(custom_items[item_name]["promote_to"], list) and len(custom_items[item_name]["promote_to"]) > 0:
 			promote_to = custom_items[item_name]["promote_to"]
 			changed_promote_to = True
-		if "promote_from" in custom_items[item_name] and type(custom_items[item_name]["promote_from"]) == list and len(custom_items[item_name]["promote_from"]) > 0:
+		if "promote_from" in custom_items[item_name] and isinstance(custom_items[item_name]["promote_from"], list) and len(custom_items[item_name]["promote_from"]) > 0:
 			promote_from = custom_items[item_name]["promote_from"]
 	# check if eligable for promotion based on current catalogs
 	if set(item_catalogs) == set(promote_from): # convert to set so order doesn't matter
@@ -525,7 +525,7 @@ def try_add_metadata(item_path, item):
 
 def prep_set_edit_date(munki_path, config, overwrite=False, promotion=None, promote_from_days=None, config_path=None):
 	if promotion:
-		if config and "promotions" in config and type(config["promotions"]) == dict:
+		if config and "promotions" in config and isinstance(config["promotions"], dict):
 			promotions = config["promotions"]
 			if does_promotion_exist(promotion, promotions):
 				_, promote_from, _, custom_items = get_promotion_info(promotion, promotions, config, config_path)
@@ -575,8 +575,8 @@ def prep_item_edit_date(item, item_path, overwrite, promote_from, promote_from_d
 		logging.error(f"File {item_path} is missing expected keys.", exc_info=True)
 		sys.exit(1)
 	# if for a specific promotion, check if custom item
-	if promote_from and (item_name in custom_items and type(custom_items[item_name]) == dict):
-		if "promote_from" in custom_items[item_name] and type(custom_items[item_name]["promote_from"]) == list and len(custom_items[item_name]["promote_from"]) > 0:
+	if promote_from and (item_name in custom_items and isinstance(custom_items[item_name], dict)):
+		if "promote_from" in custom_items[item_name] and isinstance(custom_items[item_name]["promote_from"], list) and len(custom_items[item_name]["promote_from"]) > 0:
 			promote_from = custom_items[item_name]["promote_from"]
 	# check if overwriting or if value missing
 	if "_metadata" not in item:
@@ -602,11 +602,11 @@ def prep_item_edit_date(item, item_path, overwrite, promote_from, promote_from_d
 def check_selection(config, item_name):
 	if config and "selection" in config and "type" in config["selection"]:
 		if config["selection"]["type"] == "inclusion":
-			if "items" not in config["selection"] or type(config["selection"]["items"]) != list:
+			if "items" not in config["selection"] or not isinstance(config["selection"]["items"], list):
 				return False
 			return item_name in config["selection"]["items"]
 		elif config["selection"]["type"] == "exclusion":
-			if "items" not in config["selection"] or type(config["selection"]["items"]) != list:
+			if "items" not in config["selection"] or not isinstance(config["selection"]["items"], list):
 				return True
 			return item_name not in config["selection"]["items"]
 	return True
