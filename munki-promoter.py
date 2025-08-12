@@ -5,15 +5,15 @@
 # adapted from a script by Arjen van Bochoven (https://github.com/bochoven)
 
 import datetime
-import plistlib
-import logging
-import os
-import sys
-import optparse
-import urllib.request
-import urllib.parse
 import json
+import logging
+import optparse
+import os
+import plistlib
 import ssl
+import sys
+import urllib.parse
+import urllib.request
 
 DEFAULT_CONFIG = {
 	"promotions": {
