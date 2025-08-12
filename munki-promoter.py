@@ -579,13 +579,13 @@ def prep_item_edit_date(item, item_path, overwrite, promote_from, promote_from_d
 		if "promote_from" in custom_items[item_name] and type(custom_items[item_name]["promote_from"]) == list and len(custom_items[item_name]["promote_from"]) > 0:
 			promote_from = custom_items[item_name]["promote_from"]
 	# check if overwriting or if value missing
-	if not "_metadata" in item:
+	if "_metadata" not in item:
 		item["_metadata"] = dict()
-	if overwrite or (not "munki-promoter_edit_date" in item["_metadata"]):
+	if overwrite or ("munki-promoter_edit_date" not in item["_metadata"]):
 		today = datetime.datetime.now()
 		if promote_from:
 			if set(item_catalogs) == set(promote_from):
-				if not "creation_date" in item["_metadata"]:
+				if "creation_date" not in item["_metadata"]:
 					logging.info(f"File {item_path} is missing a creation date so munki-promoter will set the last edit date to today.")
 					item["_metadata"]["munki-promoter_edit_date"] = today
 					return item_name, (item_path, item)
